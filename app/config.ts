@@ -1,4 +1,5 @@
 import { Config } from './domain/types';
+import { CountryCode } from './domain/urls';
 
 let config = {};
 try {
@@ -17,7 +18,8 @@ try {
 const fallbackConfig: Config = {
   BASE_URL: process.env.BASE_URL || 'coronastatus.no',
   LOCALE: process.env.LOCALE || 'en-US',
-  COUNTRY_CODE: process.env.COUNTRY_CODE || 'no',
+  COUNTRY_CODE: (process.env.COUNTRY_CODE as CountryCode) || 'no',
+  SUPPORTED_LOCALES: [(process.env.COUNTRY_CODE as CountryCode) || 'no'],
   COUNTRY: process.env.COUNTRY || 'Norway',
   MAP_CENTER: process.env.MAP_CENTER || '10.7522, 63.9139',
   MAP_ZOOM: parseInt(process.env.MAP_ZOOM || '4', 10),

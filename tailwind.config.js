@@ -16,4 +16,4 @@ module.exports = {
   plugins: [
     // Some useful comment
   ]
-}
+};

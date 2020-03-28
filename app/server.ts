@@ -8,10 +8,11 @@ import reportRoutes from './routes/report-routes';
 import mapRoutes from './routes/map-routes';
 import apiRoutes from './routes/api-routes';
 import statisticsRoutes from './routes/statistics-routes';
-import variousRoutes from './routes/various-routes';
+import variousRoutes, { localeCookieName } from './routes/various-routes';
 import { getInstance } from './repository/Database';
 import { swaggerDocument } from './swagger';
 import { urls } from './domain/urls';
+import { localeToFlag } from './domain/flags';
 import config from './config';
 import { ensureAllLocalesAreValidJSON } from './util/locale-validation';
 
@@ -20,12 +21,15 @@ const port = process.env.PORT || 7272;
 const isDevelopmentEnv = process.env.NODE_ENV === 'dev';
 
 i18n.configure({
-  locales: [config.LOCALE],
   defaultLocale: config.LOCALE,
+  locales: config.SUPPORTED_LOCALES,
+  cookie: localeCookieName,
   updateFiles: false,
-  directory: `${__dirname}/locales`
+  directory: `${__dirname}/locales`,
+  queryParameter: 'lang'
 });
 
+app.use(cookieParser());
 app.use(i18n.init);
 
 app.use((req, res, next) => {
@@ -51,10 +55,8 @@ app.use(
   })
 );
 const cacheKey = process.env.CACHE_KEY || `${Math.random()}`.replace('.', '');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 app.use((req, res, next) => {
   // eslint-disable-next-line prefer-destructuring
@@ -63,6 +65,7 @@ app.use((req, res, next) => {
   res.locals.lastCommit = process.env.CACHE_KEY || null;
   res.locals.imageSubfolder = config.COUNTRY_CODE;
   res.locals.htmlLang = config.LOCALE;
+  res.locals.supportedLocales = config.SUPPORTED_LOCALES;
   res.locals.country = config.COUNTRY;
   res.locals.baseUrl = config.BASE_URL;
   res.locals.zipGuide = config.ZIP_GUIDE;
@@ -74,6 +77,8 @@ app.use((req, res, next) => {
   res.locals.zipLength = config.ZIP_LENGTH;
   res.locals.zipPlaceHolder = config.ZIP_PLACEHOLDER;
   res.locals.redirectToGovernment = config.REDIRECT_TO_GOVERNMENT;
+  res.locals.localeToFlag = localeToFlag;
+  res.locals.currentLocale = req.getLocale();
   next();
 });
 

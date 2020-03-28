@@ -70,17 +70,17 @@ h3 {
 h4,
 label,
 legend {
-  display:block;
+  display: block;
   margin: 1.5rem 0 1rem;
   font-size: 16px;
   font-weight: bold;
 }
 p > label {
   margin: 0;
-  font-weight:normal;
+  font-weight: normal;
 }
 legend {
-  display:block;
+  display: block;
   padding-top: 1.5rem;
 }
 
@@ -440,4 +440,12 @@ input[type='submit']:focus {
 }
 .contributor-list {
   align-self: center;
+}
+
+.language-selector:hover .language-selector-menu {
+  display: block;
+}
+
+.language-selector-menu a {
+  cursor: pointer;
 }
